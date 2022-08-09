@@ -21,6 +21,7 @@ import com.google.android.material.snackbar.Snackbar
     private lateinit var viewModel: ZipViewModel
     private val apiService = ApiService.getInstance()
 
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -32,7 +33,7 @@ import com.google.android.material.snackbar.Snackbar
     }
 
     private fun initViewModel(){
-        viewModel = ViewModelProvider(this, ZipModelFactory(ZipRepo(apiService,this.application)))[ZipViewModel::class.java]
+        viewModel = ViewModelProvider(this, ZipModelFactory(ZipRepo(apiService)))[ZipViewModel::class.java]
 
         viewModel.zipCode.observe(this){
             setAdapter(it.data.list)
