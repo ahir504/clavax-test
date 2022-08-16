@@ -4,6 +4,7 @@ import androidx.lifecycle.LiveData
 import androidx.room.*
 import com.example.clavaxtest.model.ZipList
 
+@Dao
 interface RoomDao {
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)

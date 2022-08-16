@@ -11,6 +11,7 @@ import com.example.clavaxtest.model.ZipList
 import com.example.clavaxtest.model.Zipcode
 import com.example.clavaxtest.network.ApiService
 import com.example.clavaxtest.repository.ZipRepo
+import com.example.clavaxtest.viewmodel.DatabaseViewModel
 import com.example.clavaxtest.viewmodel.ZipModelFactory
 import com.example.clavaxtest.viewmodel.ZipViewModel
 import com.google.android.material.snackbar.Snackbar
@@ -19,6 +20,7 @@ import com.google.android.material.snackbar.Snackbar
 
     private lateinit var binding : ActivityMainBinding
     private lateinit var viewModel: ZipViewModel
+    private lateinit var databaseViewModel : DatabaseViewModel
     private val apiService = ApiService.getInstance()
 
 
@@ -29,15 +31,19 @@ import com.google.android.material.snackbar.Snackbar
 
         initViewModel()
 
-
     }
 
     private fun initViewModel(){
         viewModel = ViewModelProvider(this, ZipModelFactory(ZipRepo(apiService)))[ZipViewModel::class.java]
 
+        databaseViewModel = ViewModelProvider(this)[DatabaseViewModel::class.java]
+
         viewModel.zipCode.observe(this){
-            setAdapter(it.data.list)
-            Log.d("TAG",it.toString())
+
+            for (zipCode in it.data.list){
+                databaseViewModel.addZipCode(zipCode)
+            }
+            getZipCodeFromDataBase()
         }
 
         viewModel.error.observe(this){
@@ -46,6 +52,13 @@ import com.google.android.material.snackbar.Snackbar
         }
         viewModel.getZipcode()
      }
+
+
+    private fun getZipCodeFromDataBase(){
+        databaseViewModel.readAllZipCode().observe(this){
+            setAdapter(it)
+        }
+    }
 
      private fun setAdapter(zipList : List<ZipList>){
          val zipCodeAdapter = ZipCodeAdapter(zipList,this)
